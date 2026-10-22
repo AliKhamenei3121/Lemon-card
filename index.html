@@ -1,94 +1,73 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Comprobante (Análisis Local)</title>
-    <style>
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: #1e1e1e;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            width: 320px;
-            text-align: center;
-        }
-        .receipt {
-            background: #000000;
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: 15px;
-            border: 1px solid #333;
-        }
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin: 8px 0;
-            background: #2a2a2a;
-            border: 1px solid #444;
-            color: #fff;
-            border-radius: 6px;
-        }
-        .amount {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-    </style>
+    <title>Generador - Análisis de Ciberseguridad</title>
+    <!-- Tailwind CSS (Framework que suelen usar este tipo de paneles rápidos) -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-black text-white flex flex-col items-center justify-center min-h-screen p-4">
 
-    <div class="container">
-        <h3>Panel de Control (Simulador)</h3>
-        <label>Monto (S/):</label>
-        <input type="text" id="inputMonto" value="10.00" oninput="actualizarDatos()">
+    <div class="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl">
+        <h2 class="text-xl font-bold text-center mb-4 text-emerald-400">INTERFAZ DESCUENTOS PERU</h2>
+        <p class="text-xs text-zinc-400 text-center mb-6">Personaliza los datos de tu generador (Entorno de pruebas)</p>
 
-        <label>Nombre Destinatario:</label>
-        <input type="text" id="inputNombre" value="Rosa Rojas" oninput="actualizarDatos()">
-
-        <label>Método de Pago:</label>
-        <select id="selectDestino" onchange="actualizarDatos()">
-            <option value="YAPE">YAPE</option>
-            <option value="PLIN">PLIN</option>
-        </select>
-
-        <div class="receipt">
-            <div style="color: #00e676; font-weight: bold;">¡Lemoneaste!</div>
-            <div class="amount">S/ <span id="viewMonto">10.00</span></div>
-            <div id="viewNombre" style="font-weight: bold;">Rosa Rojas</div>
-            <div style="font-size: 12px; color: #888; margin-top: 10px;">22 oct 2026 - 11:19 AM.</div>
-            <hr style="border: 0; border-top: 1px solid #222; margin: 10px 0;">
-            <div style="font-size: 12px; display: flex; justify-content: space-between;">
-                <span>N° de celular</span><span>*** *** 067</span>
+        <!-- Controles de entrada (Inputs reactivos) -->
+        <div class="space-y-4 mb-6">
+            <div>
+                <label class="block text-xs text-zinc-400 mb-1">Monto (S/)</label>
+                <input type="text" id="montoInput" value="10.00" oninput="sincronizar()" class="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-sm focus:outline-none focus:border-emerald-500">
             </div>
-            <div style="font-size: 12px; display: flex; justify-content: space-between; margin-top: 5px;">
-                <span>Destino</span><span id="viewDestino">YAPE</span>
+            <div>
+                <label class="block text-xs text-zinc-400 mb-1">Nombre del Destinatario</label>
+                <input type="text" id="nombreInput" value="Rosa Rojas" oninput="sincronizar()" class="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-sm focus:outline-none focus:border-emerald-500">
             </div>
-            <div style="font-size: 12px; display: flex; justify-content: space-between; margin-top: 5px;">
-                <span>N° de operación</span><span>2026...44672</span>
+            <div>
+                <label class="block text-xs text-zinc-400 mb-1">Método</label>
+                <select id="destinoSelect" onchange="sincronizar()" class="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-sm focus:outline-none focus:border-emerald-500">
+                    <option value="YAPE">YAPE</option>
+                    <option value="PLIN">PLIN</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Contenedor de la Plantilla Simulada (Visual Preview) -->
+        <div class="relative w-full aspect-[9/16] bg-zinc-950 rounded-xl overflow-hidden border border-zinc-800 flex flex-col justify-between p-6 shadow-inner">
+            <!-- Simulación del encabezado de la app -->
+            <div class="flex flex-col items-center mt-4">
+                <div class="w-12 h-12 bg-emerald-500/20 border border-emerald-500 rounded-full flex items-center justify-center text-emerald-400 text-xl font-bold mb-2">✓</div>
+                <span class="text-sm font-medium text-zinc-200">¡Lemoneaste!</span>
+                <span class="text-3xl font-extrabold text-white mt-1">S/<span id="outMonto">10.00</span></span>
+                <span id="outNombre" class="text-sm font-semibold text-zinc-300 mt-1">Rosa Rojas</span>
+                <span class="text-[10px] text-zinc-500 mt-0.5">22 oct 2026 - 11:19 AM.</span>
+            </div>
+
+            <!-- Detalles inferiores de la constancia -->
+            <div class="bg-zinc-900/80 rounded-lg p-3 space-y-2 text-xs border border-zinc-800/50">
+                <div class="flex justify-between text-zinc-400">
+                    <span>N° de celular</span>
+                    <span class="text-zinc-200">*** *** 067</span>
+                </div>
+                <div class="flex justify-between text-zinc-400">
+                    <span>Destino</span>
+                    <span id="outDestino" class="text-zinc-200 font-bold">YAPE</span>
+                </div>
+                <div class="flex justify-between text-zinc-400">
+                    <span>N° de operación</span>
+                    <span class="text-zinc-200">2026...44672</span>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Lógica de manipulación del DOM en tiempo real (Client-side)
-        function actualizarDatos() {
-            document.getElementById('viewMonto').innerText = document.getElementById('inputMonto').value;
-            document.getElementById('viewNombre').innerText = document.getElementById('inputNombre').value;
-            document.getElementById('viewDestino').innerText = document.getElementById('selectDestino').value;
+        // Función que replica el enlace de datos en tiempo real del DOM original
+        function sincronizar() {
+            document.getElementById('outMonto').innerText = document.getElementById('montoInput').value;
+            document.getElementById('outNombre').innerText = document.getElementById('nombreInput').value;
+            document.getElementById('outDestino').innerText = document.getElementById('destinoSelect').value;
         }
     </script>
-
 </body>
 </html>
